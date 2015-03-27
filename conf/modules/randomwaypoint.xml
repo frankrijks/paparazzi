@@ -1,0 +1,16 @@
+<!DOCTYPE module SYSTEM "module.dtd">
+
+<module name="randomwaypoint">
+  <doc>
+    <description>Creating and moving a random waypoint</description>
+  </doc>
+  <header>
+    <file name="randomwaypoint.h"/>
+  </header>
+  <periodic fun="mock_alspaalinmiddenzit" freq="60" autorun="TRUE"/>
+  <periodic fun="alspaalinmiddenzit" freq="60" autorun="TRUE"/>
+  <makefile>
+    <file name="randomwaypoint.c"/>
+  </makefile>
+</module>
+
