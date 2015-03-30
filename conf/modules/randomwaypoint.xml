@@ -7,6 +7,7 @@
   <header>
     <file name="randomwaypoint.h"/>
   </header>
+  
   <periodic fun="mock_alspaalinmiddenzit" freq="60" autorun="TRUE"/>
   <periodic fun="alspaalinmiddenzit" freq="60" autorun="TRUE"/>
   <makefile>

@@ -24,10 +24,14 @@
  */
 
 #include "modules/randomwaypoint/randomwaypoint.h"
+#include "modules/computer_vision/cv/resize.h"
+#include "modules/computer_vision/lib/v4l/video.h"
 #include "firmwares/rotorcraft/navigation.h"
 #include "generated/flight_plan.h"
 #include <stdio.h>
+#include <string.h>
 #include <stdlib.h>
+#include <stddef.h>
 
 int mysdf = 0;
 int metersx = 4;
@@ -60,7 +64,35 @@ int mock_alspaalinmiddenzit()
 
 int alspaalinmiddenzit() 
 {
-  //The real stuff, still todo
+
+ int DOWNSIZE_FACTOR = 4; 
+ volatile uint8_t computervision_thread_status = 0;
+
+   //The real stuff, still todo
+  
+  //Video input
+  struct vid_struct vid;
+       vid.device = (char*)"/dev/video2";
+        vid.w=1280;
+        vid.h=720;
+        vid.n_buffers=0;
+  if (video_init(&vid)<0) {
+    printf("Error initialising video\n");
+    computervision_thread_status = -1;
+    return 0;
+  }
+  
+  // Pull image from video feed
+  struct img_struct* img_new = video_create_image(&vid);
+ 
+  // Resize image
+  struct img_struct small;
+  small.w = vid.w / DOWNSIZE_FACTOR;
+  small.h = vid.h / DOWNSIZE_FACTOR;
+  small.buf = (uint8_t*)malloc(small.w*small.h*2);
+  
+  resize_uyuv(img_new, &small, DOWNSIZE_FACTOR);
+        
   return 0;
 }
 
