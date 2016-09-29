@@ -199,9 +199,9 @@ void sd_logger_periodic(void)
 
         // first repetition
         case 0  :
-        	elevator_control=0;
+        	elevator_control=1;
         	rudder_control=0;
-        	throttle_control=1;
+        	throttle_control=0;
             break;
 
         // second repetition
@@ -213,7 +213,7 @@ void sd_logger_periodic(void)
 
         // further repetitions
         default :
-        	elevator_control=0;
+        	elevator_control=1;
         	rudder_control=0;
         	throttle_control=0;
         	break;
