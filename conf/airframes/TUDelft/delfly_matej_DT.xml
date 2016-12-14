@@ -110,7 +110,7 @@ telemetry: default_fixedwing.xml
   <command_laws>
     <!--let var="ledswitch" value="(2*recording_status-1)*MAX_PPRZ"/-->
     <let var="ledscontrol" value="(2*LEDs_switch-1)*MAX_PPRZ"/>
-    <set servo="MOTOR" value="(1+throttle_control*sequence_command*0.002)*@THROTTLE"/>
+    <set servo="MOTOR" value="(1+throttle_control*sequence_command*0.01*0.2)*@THROTTLE"/>
     <!--set servo="RUDDER" value="LEDs_switch*@ROLL"/-->
     <set servo="RUDDER" value="LEDs_switch*(rudder_direct*@ROLL+rudder_control*sequence_command*0.01*MAX_PPRZ-(1-rudder_direct)*roll_offset*0.01*MAX_PPRZ)"/>
     <set servo="ELEVATOR" value="LEDs_switch*(elevator_direct*@PITCH+elevator_control*sequence_command*0.01*MAX_PPRZ-(1-elevator_direct)*pitch_offset*0.01*MAX_PPRZ)"/>
@@ -121,8 +121,8 @@ telemetry: default_fixedwing.xml
  <section name="AUTOPILOT">
    <define name="MODE_STARTUP" value="AP_MODE_RC_DIRECT"/>
    <define name="MODE_MANUAL" value="AP_MODE_RC_DIRECT"/>
-   <define name="MODE_AUTO1" value="AP_MODE_ATTITUDE_DIRECT"/>
-   <define name="MODE_AUTO2" value="AP_MODE_NAV"/>
+   <define name="MODE_AUTO1" value="AP_MODE_RC_DIRECT"/>
+   <define name="MODE_AUTO2" value="AP_MODE_RC_DIRECT"/>
  </section>
 
  <section name="SIMULATOR" prefix="NPS_">

@@ -52,8 +52,8 @@ uint8_t recording_status; // 1: recording, 0: not recording
 uint8_t LEDs_switch=0; // 1: tracking LEDs on, 0: tracking LEDs off
 uint8_t elevator_control=1; // 1: automatic elevator, 0: direct RC elevator
 uint8_t rudder_control=0; // 1: automatic rudder, 0: direct RC rudder
-uint8_t throttle_control=1; // 1: automatic throttle, 0: direct RC throttle
-uint8_t elevator_direct=0; // 1: elevator follows RC command, 0: elevator in neutral position
+uint8_t throttle_control=0; // 1: automatic throttle, 0: direct RC throttle
+uint8_t elevator_direct=1; // 1: elevator follows RC command, 0: elevator in neutral position
 uint8_t rudder_direct=1; // 1: rudder follows RC command, 0: rudder in neutral position
 uint8_t throttle_direct=1; // 1: throttle follows RC command, 0: throttle in neutral position
 int8_t sequence_command; // elevator position 
@@ -137,6 +137,27 @@ void sd_logger_periodic(void)
     switch_OFF_cnt = 0;
     iii=0;
     jj=0;
+
+/* Select the type of maneuvre based on current Roll stick position */
+	if (USEC_OF_RC_PPM_TICKS(ppm_pulses[1]) > 1750) 
+	{
+	elevator_control=0;
+       	rudder_control=1;
+       	throttle_control=0;
+	}
+  	else if (USEC_OF_RC_PPM_TICKS(ppm_pulses[1]) < 1250) 
+	{
+	elevator_control=0;
+       	rudder_control=0;
+       	throttle_control=1;
+	}
+        else
+	{
+	elevator_control=1;
+       	rudder_control=0;
+       	throttle_control=0;
+	}
+
   } else if (sd_logger_current_switch_state == FALSE && switch_ON_cnt > 50 && switch_OFF_cnt > 200) {
     /* Switch is off and there have already been at least 50 samples with switch on (logging was on) and at least 200 sample with switch off (we want to stop logging)*/
     /* Stop logging */
@@ -178,26 +199,28 @@ void sd_logger_periodic(void)
       {
     	/* 1) entering the sequence */
 
-    	/* store the RC pitch value when entering the sequence */
+    	/* store the RC pitch & roll values when entering the sequence */
     	if (iii == 0 && jj==0)
     	{
     	  pitch_ppm=USEC_OF_RC_PPM_TICKS(ppm_pulses[2]);
     	  pitch_offset=(pitch_ppm-1500)/4; // pitch command in percent
-		  roll_ppm=USEC_OF_RC_PPM_TICKS(ppm_pulses[1]);
+	  roll_ppm=USEC_OF_RC_PPM_TICKS(ppm_pulses[1]);
     	  roll_offset=(roll_ppm-1500)/4; // roll command in percent
     	}
 
     	int repet=sequence_repetitions;
         elevator_direct=0;
         rudder_direct=0;
-	    throttle_direct=0;
+	throttle_direct=0;
 
         if (jj<repet)
         {
+	
+        /*
+	switch (jj){
 
-        switch (jj){
-
-        // first repetition
+	        
+	// first repetition
         case 0  :
         	elevator_control=1;
         	rudder_control=0;
@@ -218,6 +241,8 @@ void sd_logger_periodic(void)
         	throttle_control=0;
         	break;
         }
+	*/
+
         /* 2) Minimal position */
           if (iii<time_min)
             { 
@@ -259,6 +284,7 @@ void sd_logger_periodic(void)
         //LEDs_switch = 0;
         sequence_command = 0;
         pitch_offset = 0;
+        roll_offset = 0;
         iii=0;
         jj=0;
         //sequence_on=300;
